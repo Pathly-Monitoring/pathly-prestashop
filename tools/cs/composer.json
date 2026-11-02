@@ -1,0 +1,14 @@
+{
+  "name": "pathly/prestashop-module-tools",
+  "description": "Coding standard tools of PrestaShop, kept apart from the module.",
+  "license": "AFL-3.0",
+  "require": {
+    "friendsofphp/php-cs-fixer": "^3.64",
+    "phpstan/phpstan": "^1.12",
+    "prestashop/autoindex": "^2.1",
+    "prestashop/php-dev-tools": "^5.0"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

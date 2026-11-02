@@ -1,0 +1,40 @@
+{
+  "name": "pathly/prestashop-module",
+  "description": "Pathly for PrestaShop: Ping checks that the shop answers, Flow walks the checkout in a real browser.",
+  "type": "prestashop-module",
+  "license": "AFL-3.0",
+  "homepage": "https://pathlyhq.com",
+  "authors": [
+    {
+      "name": "Pathly",
+      "homepage": "https://pathlyhq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.2",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5.40 || ^9.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "PrestaShop\\Module\\Pathly\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PrestaShop\\Module\\Pathly\\Tests\\": "tests/Unit/"
+    }
+  },
+  "config": {
+    "platform-check": false,
+    "prepend-autoloader": false,
+    "optimize-autoloader": true,
+    "sort-packages": true
+  },
+  "scripts": {
+    "test": "phpunit"
+  }
+}
