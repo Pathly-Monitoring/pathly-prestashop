@@ -1,0 +1,45 @@
+# Tient à jour une PR « chore(main): release x.y.z » avec CHANGELOG.md et la
+# version de pathly.php. La fusionner crée le tag vX.Y.Z, la release GitHub
+# et y joint l'archive, sous deux noms : pathly-x.y.z.zip et pathly.zip.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      created: ${{ steps.release.outputs.release_created }}
+      tag: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  archive:
+    needs: release-please
+    if: needs.release-please.outputs.created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.tag }}
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "7.4"
+          coverage: none
+          tools: composer:v2
+      - run: tools/build.sh
+      - run: php tools/validate.php build/pathly
+      - run: gh release upload "${{ needs.release-please.outputs.tag }}" build/pathly-*.zip build/pathly.zip
+        env:
+          GH_TOKEN: ${{ github.token }}

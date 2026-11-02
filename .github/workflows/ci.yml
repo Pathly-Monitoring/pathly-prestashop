@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Style PrestaShop et traductions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-interaction --no-progress
+      - run: composer install --no-interaction --no-progress --working-dir=tools/cs
+      - name: php-cs-fixer (règles de PrestaShop)
+        run: PHP_CS_FIXER_IGNORE_ENV=1 tools/cs/vendor/bin/php-cs-fixer fix --dry-run --diff
+      - name: Traductions FR, ES, DE complètes et à jour
+        run: php tools/translations.php --check
+
+  unit:
+    name: Tests PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["7.2", "7.4", "8.1", "8.4"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+      - run: composer update --no-interaction --no-progress
+      - run: vendor/bin/phpunit
+
+  coverage:
+    name: Couverture 100 % (lignes et branches)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: xdebug
+          tools: composer:v2
+      - run: composer update --no-interaction --no-progress
+      - run: php -d memory_limit=2G vendor/bin/phpunit --path-coverage --coverage-cobertura build/cobertura.xml
+      - run: php tools/coverage-check.php build/cobertura.xml
+
+  build:
+    name: Archive du module
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "7.4"
+          coverage: none
+          tools: composer:v2
+      - run: tools/build.sh
+      - name: Règles du Validator PrestaShop (structure, en-têtes, fonctions interdites, échappement)
+        run: php tools/validate.php build/pathly
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pathly-module
+          path: |
+            build/pathly-*.zip
+            build/pathly/
+          retention-days: 7
+
+  integration:
+    name: Intégration PrestaShop ${{ matrix.prestashop }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        prestashop: ["1.7.8", "8", "9"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: pathly-module
+          path: build
+      - run: tests/integration/run.sh ${{ matrix.prestashop }}
