@@ -25,7 +25,7 @@ cleanup() {
 [ "${PATHLY_IT_KEEP:-0}" = 1 ] || trap cleanup EXIT
 
 [ -f "$root/build/pathly/pathly.php" ] || { echo "Build the module first: tools/build.sh"; exit 1; }
-rm -rf "$work" && mkdir -p "$work"
+rm -rf "$work" && mkdir -p "$work" && chmod 777 "$work"
 mount_dir="$work"
 if command -v cygpath >/dev/null 2>&1; then mount_dir="$(cygpath -w "$work")"; fi
 cp "$root/tests/integration/mock-api.php" "$root/tests/integration/scenario.php" "$work/"
@@ -33,14 +33,13 @@ cp "$root/tests/integration/mock-api.php" "$root/tests/integration/scenario.php"
 docker run --rm -v "$mount_dir:/work" --entrypoint openssl "prestashop/prestashop:$ps_tag" \
   req -x509 -newkey rsa:2048 -nodes -days 2 -subj "/CN=api.pathlyhq.com" \
   -addext "subjectAltName=DNS:api.pathlyhq.com" -keyout /work/key.pem -out /work/cert.pem 2>/dev/null
-chmod -R a+rwX "$work"
 
 docker network create "$net" >/dev/null
 docker run -d --name "$db" --network "$net" -e MARIADB_ROOT_PASSWORD=admin -e MARIADB_DATABASE=prestashop mariadb:10.11 >/dev/null
 docker run -d --name "$api" --network "$net" --network-alias api.pathlyhq.com -v "$mount_dir:/work" php:8.3-cli php /work/mock-api.php >/dev/null
 docker run -d --name "$shop" --network "$net" -v "$mount_dir:/work" \
   -e DB_SERVER="$db" -e DB_PASSWD=admin -e DB_NAME=prestashop -e PS_INSTALL_AUTO=1 \
-  -e PS_DOMAIN=localhost -e PS_LANGUAGE=fr -e PS_COUNTRY=FR \
+  -e PS_DOMAIN=localhost -e PS_FOLDER_ADMIN=admin-dev -e PS_LANGUAGE=fr -e PS_COUNTRY=FR \
   -e ADMIN_MAIL=demo@prestashop.com -e ADMIN_PASSWD=prestashop_demo \
   "prestashop/prestashop:$ps_tag" >/dev/null
 
@@ -50,6 +49,13 @@ for i in $(seq 1 120); do
     break
   fi
   [ "$i" = 120 ] && { docker logs --tail 50 "$shop"; echo "PrestaShop did not start"; exit 1; }
+  # The PrestaShop 9 image stops right after a successful install (it removes
+  # an install folder the installer already removed): start it again once.
+  if [ "$(docker inspect -f '{{.State.Running}}' "$shop")" = false ] && [ -z "${restarted:-}" ] \
+    && docker logs "$shop" 2>&1 | grep -q "Installation successful"; then
+    restarted=1
+    docker start "$shop" >/dev/null
+  fi
   sleep 5
 done
 
