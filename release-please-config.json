@@ -4,7 +4,6 @@
   "packages": {
     ".": {
       "release-type": "simple",
-      "release-as": "1.0.0",
       "package-name": "pathly-prestashop",
       "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,
