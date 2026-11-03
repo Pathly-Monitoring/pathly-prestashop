@@ -76,6 +76,9 @@ class SettingsAndLinksTest extends TestCase
         $this->assertSame('', Links::normalize(null));
         $this->assertSame('shop.example', Links::host('https://shop.example/fr/'));
         $this->assertSame('shop.example', Links::host('https://shop.example'));
+        $this->assertSame('shop.example:8080/fr', Links::normalize('http://shop.example:8080/fr/'));
+        $this->assertSame('shop.example:8080', Links::host('http://shop.example:8080/fr/'));
+        $this->assertSame('shop.example', Links::normalize('https://shop.example:443/'));
     }
 
     public function testOnlyPathlyHttpsLinksAreTrusted()
