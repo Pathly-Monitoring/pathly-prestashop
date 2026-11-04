@@ -61,6 +61,18 @@ $major = (int) explode('.', _PS_VERSION_)[0];
 $major = $major === 1 ? (int) explode('.', _PS_VERSION_)[1] : $major;
 echo 'PrestaShop ' . _PS_VERSION_ . ', PHP ' . PHP_VERSION . ", step $step\n";
 
+// The Addons team tests in debug mode and rejects a module that raises any PHP
+// notice, warning or deprecation: each one raised from the module fails here.
+$moduleErrors = [];
+error_reporting(E_ALL);
+set_error_handler(function ($level, $message, $file, $line) use (&$moduleErrors) {
+    if ((error_reporting() & $level) && strpos($file, '/modules/pathly/') !== false) {
+        $moduleErrors[] = "$message (" . basename($file) . ":$line)";
+    }
+
+    return false;
+});
+
 if ($step === 'configure') {
     $module = Module::getInstanceByName('pathly');
     check($module instanceof Pathly && Module::isInstalled('pathly'), 'module installed');
@@ -150,6 +162,8 @@ if ($step === 'clean') {
     });
     check(count(requests()) > 0 && $leaks === [], 'no e-mail address in any of the ' . count(requests()) . ' requests');
 }
+
+check($moduleErrors === [], 'no PHP notice, warning or deprecation from the module' . ($moduleErrors === [] ? '' : ': ' . implode('; ', array_unique($moduleErrors))));
 
 echo $failures === 0 ? "PASS\n" : "$failures FAILURE(S)\n";
 exit($failures === 0 ? 0 : 1);
