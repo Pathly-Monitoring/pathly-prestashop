@@ -42,7 +42,7 @@ Chaque exécution du Flow crée un panier de test sur la boutique. Il peut décl
 
 ### Prix
 
-Le module est gratuit. Il se connecte à un compte Pathly : l'offre Solo est gratuite et sans carte bancaire. Les offres payantes donnent plus de Ping et de Flow, et des fréquences plus courtes (tarifs sur pathlyhq.com).
+Le module est gratuit. Il se connecte à un compte Pathly : l'offre Solo est gratuite et sans carte bancaire. Les offres payantes donnent plus de Ping et de Flow, et des fréquences plus courtes (tarifs dans votre compte Pathly).
 
 ### Compatibilité
 
@@ -63,7 +63,7 @@ Non. Il s'arrête avant le paiement et ne saisit que des valeurs de test. Il cr�
 PrestaShop 9 et 8 préviennent le module par leurs hooks de mise à jour, et le module compare aussi les versions installées. Pathly rejoue alors le Flow. Deux rejeux sont espacés d'au moins 10 minutes.
 
 **Mes clients voient-ils quelque chose ?**
-Seulement si vous allumez le badge : une petite image en pied de page, chargée depuis pathlyhq.com, qui renvoie vers votre page de statut.
+Seulement si vous allumez le badge : une petite image en pied de page, chargée depuis les serveurs de Pathly, qui renvoie vers votre page de statut.
 
 **Et si je désinstalle le module ?**
 Ses réglages sont effacés de la boutique. Vos Ping et Flow restent dans votre compte Pathly, où vous pouvez les supprimer.
@@ -82,3 +82,8 @@ Il reconnaît PrestaShop. Si votre thème est très personnalisé et que Lumi ne
 - Encart du tableau de bord : état, dernier échec avec capture, offre et quotas.
 - Badge de disponibilité, éteint par défaut.
 - Traductions français, anglais, espagnol et allemand.
+
+### 1.0.1
+
+- Feuille de style et script chargés par le contrôleur du back-office.
+- Guide d'utilisation en anglais et en français (PDF) dans le dossier docs du module.
