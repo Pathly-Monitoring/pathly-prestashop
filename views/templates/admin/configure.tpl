@@ -124,4 +124,3 @@
     </div>
   {/if}
 </div>
-<script src="{$pathly.jsUrl|escape:'htmlall':'UTF-8'}"></script>

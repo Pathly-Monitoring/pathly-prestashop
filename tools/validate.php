@@ -6,6 +6,8 @@
  *   - the licence header and the _PS_VERSION_ guard in every PHP file of the module;
  *   - no forbidden or debug function;
  *   - every Smarty variable escaped (|escape, |intval) in the templates;
+ *   - no <script>, <link> or <style> tag in the templates (addJS, addCSS);
+ *   - a PDF user guide in docs/;
  *   - logo.png, LICENSE.md and the module class name.
  *
  * Usage: php tools/validate.php build/pathly
@@ -16,7 +18,7 @@ if (!is_file("$dir/pathly.php")) {
     fwrite(STDERR, "No module in $dir: run tools/build.sh first\n");
     exit(1);
 }
-foreach (['logo.png', 'LICENSE.md', 'index.php', 'composer.json'] as $file) {
+foreach (['logo.png', 'LICENSE.md', 'index.php', 'composer.json', 'docs/readme_en.pdf', 'docs/readme_fr.pdf'] as $file) {
     if (!is_file("$dir/$file")) {
         $errors[] = "missing $file";
     }
@@ -57,6 +59,10 @@ foreach ($iterator as $path => $info) {
         }
     }
     if (substr($path, -4) === '.tpl') {
+        // Scripts and style sheets go through the controller (addJS, addCSS).
+        if (preg_match('/<script|<link\b|<style/i', file_get_contents($path))) {
+            $errors[] = "script or style sheet tag in $relative: use addJS() or addCSS()";
+        }
         preg_match_all('/\{\$[^}]+\}/', file_get_contents($path), $vars);
         foreach ($vars[0] as $var) {
             if (!preg_match('/\|(escape:|intval)/', $var)) {

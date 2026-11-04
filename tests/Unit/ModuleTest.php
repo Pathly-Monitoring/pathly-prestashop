@@ -87,7 +87,7 @@ class ModuleTest extends TestCase
         $this->assertSame('index.php?controller=AdminModules&configure=pathly', $vars['action']);
         $this->assertSame('token-AdminModules', $vars['token']);
         $this->assertNull($vars['pingUrl']);
-        $this->assertSame('/modules/pathly/views/js/configure.js?v=1.0.0', $vars['jsUrl']);
+        $this->assertArrayNotHasKey('jsUrl', $vars);
         $this->assertSame([], $this->api->calls);
     }
 
@@ -308,11 +308,18 @@ class ModuleTest extends TestCase
 
     public function testBackOfficeHeaderComparesVersionsAndLoadsTheCss()
     {
+        $controller = \Context::getContext()->controller;
         $this->assertSame('', $this->module->hookDisplayBackOfficeHeader([]));
+        $this->assertSame([], $controller->css);
+        $this->assertSame([], $controller->js);
         \Tools::$values = ['controller' => 'AdminDashboard'];
-        $this->assertStringContainsString('views/css/admin.css?v=1.0.0', $this->module->hookDisplayBackOfficeHeader([]));
+        $this->assertSame('', $this->module->hookDisplayBackOfficeHeader([]));
+        $this->assertSame(['/modules/pathly/views/css/admin.css all'], $controller->css);
+        $this->assertSame([], $controller->js);
         \Tools::$values = ['configure' => 'pathly'];
-        $this->assertStringContainsString('admin.css', $this->module->hookDisplayBackOfficeHeader([]));
+        $this->assertSame('', $this->module->hookDisplayBackOfficeHeader([]));
+        $this->assertCount(2, $controller->css);
+        $this->assertSame(['/modules/pathly/views/js/configure.js'], $controller->js);
 
         $this->connected();
         $settings = $this->module->settings();

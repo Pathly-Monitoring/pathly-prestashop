@@ -1,0 +1,10 @@
+body { font-family: "Segoe UI", Arial, sans-serif; color: #1d2433; font-size: 11pt; line-height: 1.5; margin: 0; }
+h1 { font-size: 22pt; margin: 0 0 4pt; color: #0b1220; }
+h2 { font-size: 14pt; margin: 18pt 0 6pt; color: #0f7f73; border-bottom: 1px solid #d8e4e2; padding-bottom: 3pt; break-after: avoid; }
+code { font-family: Consolas, monospace; font-size: 9.5pt; background: #f2f5f4; }
+img { max-width: 100%; border: 1px solid #ccd; margin: 6pt 0; break-inside: avoid; }
+table { border-collapse: collapse; width: 100%; }
+td, th { border: 1px solid #d8dde3; padding: 4pt 6pt; text-align: left; vertical-align: top; }
+th { width: 30%; }
+.lead { color: #4a5568; font-style: italic; }
+.note { background: #fff8e6; border-left: 3pt solid #c58a00; padding: 6pt 8pt; }

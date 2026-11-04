@@ -6,6 +6,8 @@ Tout ce qu'il faut pour publier le module `pathly`. Rien n'a été soumis, aucun
 
 | Fichier | Rôle |
 |---|---|
+| `champs-addons.md` | **Champs du formulaire Addons, dans l'ordre, avec le texte anglais à coller** |
+| `guide/user-guide-{en,fr}.html` | Source du guide d'utilisation livré en PDF dans `docs/` du module (`node tools/user-guide.cjs`) |
 | `fiche-fr.md` | Fiche en français : nom, résumé court, description, FAQ, journal des changements |
 | `listing-en.md` | La même fiche en anglais |
 | `screenshots/*-fr.png`, `screenshots/*-en.png` | Captures 1440 × 900 faites sur PrestaShop 8.2 en Docker, back-office en français puis en anglais : 1 connexion, 2 propositions de Lumi, 3 réglages, 4 encart du tableau de bord, 5 badge en pied de page |

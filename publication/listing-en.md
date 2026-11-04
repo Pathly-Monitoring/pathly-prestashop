@@ -42,7 +42,7 @@ Each run of the Flow creates a test cart on the shop. It can trigger your abando
 
 ### Price
 
-The module is free. It connects to a Pathly account: the Solo plan is free, without a credit card. Paid plans give more Ping and Flow and shorter intervals (prices on pathlyhq.com).
+The module is free. It connects to a Pathly account: the Solo plan is free, without a credit card. Paid plans give more Ping and Flow and shorter intervals (prices in your Pathly account).
 
 ### Compatibility
 
@@ -63,7 +63,7 @@ No. It stops before payment and only types test values. It does create a test ca
 PrestaShop 9 and 8 tell the module through their update hooks, and the module also compares the installed versions. Pathly then replays the Flow. Two replays are at least 10 minutes apart.
 
 **Do my customers see anything?**
-Only if you turn the badge on: a small image in the footer, loaded from pathlyhq.com, that links to your status page.
+Only if you turn the badge on: a small image in the footer, loaded from the Pathly servers, that links to your status page.
 
 **What if I uninstall the module?**
 Its settings are deleted from the shop. Your Ping and Flow stay in your Pathly account, where you can delete them.
@@ -82,3 +82,8 @@ It recognises PrestaShop. If your theme is heavily customised and Lumi does not 
 - Dashboard widget: status, last failure with screenshot, plan and quotas.
 - Availability badge, off by default.
 - French, English, Spanish and German translations.
+
+### 1.0.1
+
+- Style sheet and script loaded through the back office controller.
+- User guide in English and French (PDF) in the docs folder of the module.
