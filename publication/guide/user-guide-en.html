@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pathly - checkout monitoring - User guide</title>
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+<h1>Pathly - checkout monitoring</h1>
+<p>User and installation guide of the PrestaShop module. For PrestaShop 1.7.7 to 9.</p>
+<p class="lead">Pathly watches the path. Ping if it's up. Flow if a user can walk it. Chain if the services behind it hold.</p>
+<p><strong>The module is free. It connects to a Pathly account: the Solo plan is free, without a credit card. Paid Pathly plans are a separate subscription (prices on pathlyhq.com).</strong></p>
+
+<h2>1. What the module does</h2>
+<ul>
+  <li><strong>Ping</strong>: once connected, Pathly checks every 5 minutes that the shop answers. A Ping already created for the shop is attached, never duplicated.</li>
+  <li><strong>Flow of the checkout, prepared by Lumi</strong>: Lumi, the Pathly assistant, recognises PrestaShop and prepares the Flow: add a product to the cart, then go up to the payment page. Each proposed Flow is replayed before it is shown. You validate it in one click.</li>
+  <li><strong>Replay after an update</strong>: when PrestaShop or a module is updated, Pathly replays the Flow.</li>
+  <li><strong>Dashboard widget</strong>: status of the Ping and the Flow, date and screenshot of the last failure, plan and quotas.</li>
+  <li><strong>Availability badge</strong> in the footer, linked to your public status page. Off by default.</li>
+</ul>
+
+<h2>2. Requirements</h2>
+<table>
+  <tr><th>PrestaShop</th><td>1.7.7 to 9</td></tr>
+  <tr><th>PHP</th><td>7.2 or later, as supported by your PrestaShop version. Extensions curl and json.</td></tr>
+  <tr><th>Outgoing HTTPS</th><td>The shop must reach <code>https://api.pathlyhq.com</code>. No other address is called.</td></tr>
+  <tr><th>Public shop</th><td>Pathly visits the shop from the internet: a shop in maintenance mode, behind a password or on a local address cannot be watched.</td></tr>
+  <tr><th>Pathly account</th><td>Free Solo plan, without a credit card.</td></tr>
+</table>
+
+<h2>3. Installation</h2>
+<ol>
+  <li>In the back office, open <strong>Modules &gt; Module Manager</strong>, click <strong>Upload a module</strong> and choose <code>pathly.zip</code>.</li>
+  <li>Click <strong>Configure</strong>.</li>
+</ol>
+<p>Only an employee with the SuperAdmin profile sees the settings page and the widget.</p>
+
+<h2>4. Connection</h2>
+<ol>
+  <li>No account yet? Click <strong>Create a free account</strong>.</li>
+  <li>In Pathly, open <strong>Settings &gt; API keys</strong> and create a key, preferably limited to one Space, with the scopes <code>org:read scenarios:read scenarios:write runs:read runs:trigger assistant:run assistant:save status:read status:write</code>.</li>
+  <li>Paste the key in the module and click <strong>Connect</strong>. The module checks it with Pathly. A refused key is not saved. The key is stored encrypted with the shop secret and never displayed again.</li>
+  <li>The Ping of the shop is created, or the existing one is attached.</li>
+</ol>
+<img src="../screenshots/1-connect-en.png" alt="Connection">
+
+<h2>5. Checkout Flow with Lumi</h2>
+<ol>
+  <li>Tick <strong>I manage this shop and allow Pathly to browse it.</strong>, then click <strong>Prepare the checkout Flow with Lumi</strong>.</li>
+  <li>Lumi explores the shop for about two minutes. The page refreshes by itself.</li>
+  <li>Validate the proposed Flow. Pathly runs it at once, then on its schedule.</li>
+</ol>
+<img src="../screenshots/2-lumi-en.png" alt="Lumi proposals">
+<p class="note">Lumi never pays, never sends a form and only types test values. Each run of the Flow creates a test cart on the shop: it can trigger your abandoned-cart reminders and appear in your cart statistics. Exclude the test address and name from these tools.</p>
+
+<h2>6. Replay after an update</h2>
+<p>PrestaShop 9 signals module updates with the <code>actionModuleUpgradeAfter</code> hook, PrestaShop 8 with <code>actionBeforeUpgradeModule</code>. On every version, the module also compares the installed versions of PrestaShop and of the modules, at most every 5 minutes, when an administrator opens the back office. Two replays are at least 10 minutes apart. The button <strong>Run it now</strong> starts a replay by hand.</p>
+<img src="../screenshots/3-settings-en.png" alt="Settings">
+
+<h2>7. Dashboard widget</h2>
+<p>On the back office dashboard: status of the Ping and of the Flow, date and screenshot of the last failure, last replay, plan and quotas, and links to Pathly.</p>
+<img src="../screenshots/4-dashboard-en.png" alt="Dashboard widget">
+
+<h2>8. Availability badge</h2>
+<p>Off by default. Click <strong>Show the badge</strong>: Pathly publishes a status page, and a small badge in the shop footer links to it. The browsers of your visitors then load the badge image from pathlyhq.com: mention it in your privacy policy. Click <strong>Hide the badge</strong> to remove it and unpublish the page.</p>
+<img src="../screenshots/5-badge-en.png" alt="Badge">
+
+<h2>9. Data and privacy</h2>
+<ul>
+  <li>Nothing is sent to Pathly before an administrator saves an API key.</li>
+  <li>Then only the address of the shop and the versions of PrestaShop and of the module are sent. No customer data, no order, no list of modules.</li>
+  <li>Pathly runs on Google Cloud, region europe-west1 (Belgium). Terms: https://pathlyhq.com/en/legal/cgu. Privacy: https://pathlyhq.com/en/legal/privacy. Data processing agreement: https://pathlyhq.com/en/legal/dpa.</li>
+</ul>
+
+<h2>10. Uninstall</h2>
+<p>Uninstalling deletes every setting of the module from the shop. Your Ping and Flow stay in your Pathly account, where you can delete them.</p>
+
+<h2>11. Troubleshooting</h2>
+<table>
+  <tr><th>Pathly refused this API key</th><td>Check that the key is active, not revoked, and has the scopes listed above.</td></tr>
+  <tr><th>Pathly cannot reach your shop</th><td>The shop must be online, out of maintenance mode, on a public address.</td></tr>
+  <tr><th>Pathly cannot be reached from your server</th><td>The server must allow outgoing HTTPS to api.pathlyhq.com.</td></tr>
+  <tr><th>Lumi does not find the checkout</th><td>Record the Flow yourself in Pathly, without code.</td></tr>
+</table>
+</body>
+</html>

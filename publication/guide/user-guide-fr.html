@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Pathly - surveillance du tunnel de commande - Guide d'utilisation</title>
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+<h1>Pathly - surveillance du tunnel de commande</h1>
+<p>Guide d'installation et d'utilisation du module PrestaShop. Pour PrestaShop 1.7.7 à 9.</p>
+<p class="lead">Pathly watches the path. Ping if it's up. Flow if a user can walk it. Chain if the services behind it hold.</p>
+<p><strong>Le module est gratuit. Il se connecte à un compte Pathly : l'offre Solo est gratuite et sans carte bancaire. Les offres payantes de Pathly sont un abonnement séparé (tarifs sur pathlyhq.com).</strong></p>
+
+<h2>1. Ce que fait le module</h2>
+<ul>
+  <li><strong>Ping</strong> : dès la connexion, Pathly vérifie toutes les 5 minutes que la boutique répond. Un Ping déjà créé pour la boutique est rattaché, sans doublon.</li>
+  <li><strong>Flow du tunnel, préparé par Lumi</strong> : Lumi, l'assistant de Pathly, reconnaît PrestaShop et prépare le Flow : ajouter un produit au panier, puis aller jusqu'à la page de paiement. Chaque Flow proposé est rejoué avant de vous être montré. Vous le validez en un clic.</li>
+  <li><strong>Rejeu après une mise à jour</strong> : quand PrestaShop ou un module est mis à jour, Pathly rejoue le Flow.</li>
+  <li><strong>Encart du tableau de bord</strong> : état du Ping et du Flow, date et capture du dernier échec, offre et quotas.</li>
+  <li><strong>Badge de disponibilité</strong> en pied de page, relié à votre page de statut publique. Éteint par défaut.</li>
+</ul>
+
+<h2>2. Prérequis</h2>
+<table>
+  <tr><th>PrestaShop</th><td>1.7.7 à 9</td></tr>
+  <tr><th>PHP</th><td>7.2 ou plus, selon votre version de PrestaShop. Extensions curl et json.</td></tr>
+  <tr><th>HTTPS sortant</th><td>La boutique doit joindre <code>https://api.pathlyhq.com</code>. Aucune autre adresse n'est appelée.</td></tr>
+  <tr><th>Boutique publique</th><td>Pathly visite la boutique depuis internet : une boutique en maintenance, protégée par un mot de passe ou sur une adresse locale ne peut pas être surveillée.</td></tr>
+  <tr><th>Compte Pathly</th><td>Offre Solo gratuite, sans carte bancaire.</td></tr>
+</table>
+
+<h2>3. Installation</h2>
+<ol>
+  <li>Dans le back-office, ouvrez <strong>Modules &gt; Gestionnaire de modules</strong>, cliquez sur <strong>Installer un module</strong> et choisissez <code>pathly.zip</code>.</li>
+  <li>Cliquez sur <strong>Configurer</strong>.</li>
+</ol>
+<p>Seul un employé au profil SuperAdmin voit la page de réglages et l'encart.</p>
+
+<h2>4. Connexion</h2>
+<ol>
+  <li>Pas encore de compte ? Cliquez sur <strong>Créer un compte gratuit</strong>.</li>
+  <li>Dans Pathly, ouvrez <strong>Réglages &gt; Clés d'API</strong> et créez une clé, de préférence limitée à un Espace, avec les portées <code>org:read scenarios:read scenarios:write runs:read runs:trigger assistant:run assistant:save status:read status:write</code>.</li>
+  <li>Collez la clé dans le module et cliquez sur <strong>Connecter</strong>. Le module la vérifie auprès de Pathly. Une clé refusée n'est pas enregistrée. La clé est chiffrée avec le secret de la boutique et n'est plus jamais affichée.</li>
+  <li>Le Ping de la boutique est créé, ou le Ping existant est rattaché.</li>
+</ol>
+<img src="../screenshots/1-connect-fr.png" alt="Connexion">
+
+<h2>5. Flow du tunnel avec Lumi</h2>
+<ol>
+  <li>Cochez <strong>Je gère cette boutique et j'autorise Pathly à la parcourir.</strong>, puis cliquez sur <strong>Préparer le Flow du tunnel avec Lumi</strong>.</li>
+  <li>Lumi explore la boutique pendant environ deux minutes. La page s'actualise toute seule.</li>
+  <li>Validez le Flow proposé. Pathly l'exécute tout de suite, puis à sa fréquence.</li>
+</ol>
+<img src="../screenshots/2-lumi-fr.png" alt="Propositions de Lumi">
+<p class="note">Lumi ne paie rien, n'envoie aucun formulaire et ne saisit que des valeurs de test. Chaque exécution du Flow crée un panier de test sur la boutique : il peut déclencher vos relances de panier abandonné et apparaître dans vos statistiques de paniers. Excluez l'adresse et le nom de test de ces outils.</p>
+
+<h2>6. Rejeu après une mise à jour</h2>
+<p>PrestaShop 9 signale la mise à jour d'un module par le hook <code>actionModuleUpgradeAfter</code>, PrestaShop 8 par <code>actionBeforeUpgradeModule</code>. Sur toutes les versions, le module compare aussi les versions installées de PrestaShop et des modules, au plus toutes les 5 minutes, quand un administrateur ouvre le back-office. Deux rejeux sont espacés d'au moins 10 minutes. Le bouton <strong>L'exécuter maintenant</strong> lance un rejeu à la main.</p>
+<img src="../screenshots/3-settings-fr.png" alt="Réglages">
+
+<h2>7. Encart du tableau de bord</h2>
+<p>Sur le tableau de bord du back-office : état du Ping et du Flow, date et capture du dernier échec, dernier rejeu, offre et quotas, et liens vers Pathly.</p>
+<img src="../screenshots/4-dashboard-fr.png" alt="Encart du tableau de bord">
+
+<h2>8. Badge de disponibilité</h2>
+<p>Éteint par défaut. Cliquez sur <strong>Afficher le badge</strong> : Pathly publie une page de statut, et un petit badge en pied de page de la boutique renvoie vers elle. Le navigateur de vos visiteurs charge alors l'image du badge depuis pathlyhq.com : mentionnez-le dans votre politique de confidentialité. Cliquez sur <strong>Masquer le badge</strong> pour le retirer et dépublier la page.</p>
+<img src="../screenshots/5-badge-fr.png" alt="Badge">
+
+<h2>9. Données et confidentialité</h2>
+<ul>
+  <li>Rien ne part vers Pathly avant qu'un administrateur ait enregistré une clé d'API.</li>
+  <li>Ensuite, seules l'adresse de la boutique et les versions de PrestaShop et du module sont envoyées. Aucune donnée de client, aucune commande, aucune liste de modules.</li>
+  <li>Pathly fonctionne sur Google Cloud, région europe-west1 (Belgique). Conditions : https://pathlyhq.com/fr/legal/cgu. Confidentialité : https://pathlyhq.com/fr/legal/privacy. Accord de traitement des données : https://pathlyhq.com/fr/legal/dpa.</li>
+</ul>
+
+<h2>10. Désinstallation</h2>
+<p>La désinstallation efface tous les réglages du module dans la boutique. Vos Ping et Flow restent dans votre compte Pathly, où vous pouvez les supprimer.</p>
+
+<h2>11. En cas de problème</h2>
+<table>
+  <tr><th>Pathly a refusé cette clé d'API</th><td>Vérifiez que la clé est active, non révoquée, et qu'elle a les portées listées plus haut.</td></tr>
+  <tr><th>Pathly ne joint pas votre boutique</th><td>La boutique doit être en ligne, hors maintenance, sur une adresse publique.</td></tr>
+  <tr><th>Pathly est injoignable depuis votre serveur</th><td>Le serveur doit autoriser le HTTPS sortant vers api.pathlyhq.com.</td></tr>
+  <tr><th>Lumi ne trouve pas le tunnel</th><td>Enregistrez le Flow vous-même dans Pathly, sans code.</td></tr>
+</table>
+</body>
+</html>

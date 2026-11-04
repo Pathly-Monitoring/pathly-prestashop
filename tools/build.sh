@@ -11,7 +11,7 @@ dir="$out/pathly"
 
 rm -rf "$dir" "$out"/pathly-*.zip "$out/pathly.zip"
 mkdir -p "$dir"
-cp -r "$root"/{pathly.php,logo.png,composer.json,LICENSE.md,src,views,translations} "$dir/"
+cp -r "$root"/{pathly.php,logo.png,composer.json,LICENSE.md,src,views,translations,docs} "$dir/"
 cp "$root/tools/index.php.txt" "$dir/index.php"
 (cd "$dir" && ${COMPOSER:-composer} install --no-dev --optimize-autoloader --no-interaction --quiet)
 rm -f "$dir/composer.lock"
