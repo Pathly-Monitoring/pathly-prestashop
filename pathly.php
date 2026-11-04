@@ -265,7 +265,6 @@ class Pathly extends Module
                 'lumi' => $lumi,
                 'lumiError' => $lumiError,
                 'badgeEnabled' => $settings->flag(Settings::BADGE_ENABLED),
-                'jsUrl' => $this->_path . 'views/js/configure.js?v=' . $this->version,
             ],
         ]);
 
@@ -301,7 +300,9 @@ class Pathly extends Module
     }
 
     /**
-     * Compares the installed versions (every 5 minutes at most) and loads the CSS.
+     * Compares the installed versions (every 5 minutes at most), then adds the
+     * CSS on the dashboard and the settings page, and the script on the
+     * settings page, through the controller: no HTML is written here.
      *
      * @param array<string, mixed> $params
      *
@@ -310,8 +311,12 @@ class Pathly extends Module
     public function hookDisplayBackOfficeHeader($params)
     {
         $this->checkVersions(false);
-        if (Tools::getValue('controller') === 'AdminDashboard' || Tools::getValue('configure') === $this->name) {
-            return '<link rel="stylesheet" href="' . $this->_path . 'views/css/admin.css?v=' . $this->version . '">';
+        $settingsPage = Tools::getValue('configure') === $this->name;
+        if (Tools::getValue('controller') === 'AdminDashboard' || $settingsPage) {
+            $this->context->controller->addCSS($this->_path . 'views/css/admin.css', 'all');
+        }
+        if ($settingsPage) {
+            $this->context->controller->addJS($this->_path . 'views/js/configure.js');
         }
 
         return '';

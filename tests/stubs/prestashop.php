@@ -140,6 +140,25 @@ class StubLink
     }
 }
 
+class StubController
+{
+    /** @var string[] */
+    public $css = [];
+
+    /** @var string[] */
+    public $js = [];
+
+    public function addCSS($path, $media = 'all')
+    {
+        $this->css[] = $path . ' ' . $media;
+    }
+
+    public function addJS($path)
+    {
+        $this->js[] = $path;
+    }
+}
+
 class Context
 {
     /** @var Context|null */
@@ -150,6 +169,7 @@ class Context
     public $language;
     public $smarty;
     public $link;
+    public $controller;
 
     public static function getContext()
     {
@@ -168,6 +188,7 @@ class Context
         $context->language = (object) ['iso_code' => 'fr'];
         $context->smarty = new StubSmarty();
         $context->link = new StubLink();
+        $context->controller = new StubController();
         self::$instance = $context;
     }
 }
